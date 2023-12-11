@@ -49,6 +49,41 @@ public class StreamTest {
     }
 
     public static void main(String[] args) {
+        List<Author> authors = getAuthors();
+        Stream<Author> authorStream = authors.stream();
+        authorStream.filter(new Predicate<Author>() {
+            @Override
+            public boolean test(Author author) {
+                return author.getAge()>17;
+            }
+        }.and(new Predicate<Author>() {
+            @Override
+            public boolean test(Author author) {
+                return author.getName().length()>1;
+            }
+        })).forEach(author -> System.out.println(author.getName()));
+    }
+
+    private static void map() {
+        Optional<Author> authorOptional = Optional.ofNullable(getAuthor());
+        Optional<List<Book>> books = authorOptional.map(author -> author.getBooks());
+        books.ifPresent(books1 -> books1.forEach(book -> System.out.println(book.getName())));
+    }
+
+    private static void isPresent() {
+        Optional<Author> authorOptional = Optional.ofNullable(getAuthor());
+        if (authorOptional.isPresent()){
+            System.out.println(authorOptional.get().getName());
+        }
+    }
+
+    private static void filter() {
+        Optional<Author> authorOptional = Optional.ofNullable(getAuthor());
+        authorOptional.filter(author -> author.getAge()>100)
+                .ifPresent(author -> System.out.println(author.getName()));
+    }
+
+    private static void orElseThrow() {
         Optional<Author> authorOptional = Optional.ofNullable(getAuthor());
         try {
             Author author = authorOptional.orElseThrow(() -> new RuntimeException("author为空"));
